@@ -6,12 +6,12 @@ $template = new TemplateEngine();
 $fileName = "template.html";
 $templateName = "book_description.html";
 
-$nom = "nom";
-$auteur = "auteur";
-$description = "description";
-$prix = "prix";
+$nom = "tc";
+$auteur = "iv";
+$description = "yes";
+$prix = "00";
 
-$parameters = [$nom, $auteur, $description, $prix];
+$parameters = ["nom" => $nom, "auteur" => $auteur, "description" => $description, "prix" => $prix];
 
 $template->createFile($fileName, $templateName, $parameters);
 ?>
