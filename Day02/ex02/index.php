@@ -1,14 +1,15 @@
 <?php
 
-include "./Text.php";
-include "./TemplateEngine.php";
+include_once "TemplateEngine.php";
+include_once "Coffee.php";
+include_once "Tea.php";
 
-$tab_str = array("chaine1", "chaine2");
-$text = new Text($tab_str);
-$fileName = "template.html";
+$template = new TemplateEngine();
+$fileName = "file.html";
 
-$text->append("chaine3", "chaine4", "chaine5", "...");
+$coffee = new Coffee();
+$tea = new Tea();
 
-$temp = new TemplateEngine();
-$temp->createFile($fileName, $text);
+$template->createFile($fileName, $coffee);
+$template->createFile($fileName, $tea);
 ?>

@@ -1,11 +1,14 @@
 <?php
 
+include_once "HotBeverage.php";
+
+
 class Tea extends HotBeverage{
     private $description = "A green tea.";
     private $comment = "Very good.";
 
-    function __constructor(){
-        $this->name = "Tea";
+    public function __construct() {
+        parent::__construct("Tea", 3, 4.5);
     }
 
     function getDescription(){
