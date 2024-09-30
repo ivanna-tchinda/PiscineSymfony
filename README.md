@@ -96,3 +96,7 @@ et taper dans le terminal
 composer install
 ```
 
+## ex02
+
+## ex03
+https://stackoverflow.com/questions/33052195/what-are-the-differences-between-composer-update-and-composer-install
