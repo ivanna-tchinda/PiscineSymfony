@@ -100,3 +100,38 @@ composer install
 
 ## ex03
 https://stackoverflow.com/questions/33052195/what-are-the-differences-between-composer-update-and-composer-install
+
+# DAY 04
+
+- Creer un projet avec symfony version LTS (6.4):
+```bash
+symfony new nom_du_projet --version=6.4
+```
+- Creer un Controller:
+```bash
+symfony console make:controller NomDuController
+```
+- Configurer les routes:
+```bash
+return[
+    ...
+    App\Controller\DefaultController::class => ['all' => true],
+]
+```
+- Lancer le server:
+```bash
+symfony server:start
+```
+- Stopper le server:
+```bash
+symfony server:stop
+```
+
+## ex03
+
+Creer un formulaire symfony
+
+- Installer symfony/form:
+```bash
+composer require symfony/form
+```
