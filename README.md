@@ -127,11 +127,15 @@ symfony server:start
 symfony server:stop
 ```
 
-## ex03
+## ex02
 
 Creer un formulaire symfony
 
 - Installer symfony/form:
 ```bash
 composer require symfony/form
+```
+- Lancer:
+```bash
+php bin/console make:form
 ```
