@@ -6,7 +6,7 @@ The aim of this Piscine* Symfony is to learn the basics of PHP and Symfony by cr
 [English subject]
 
 ## Table of Contents
-* [PHP Basics] (#PHP-basics)
+* [PHP Basics](#PHP-basics)
 
 # PHP Basics
 [English subject](https://cdn.intra.42.fr/pdf/pdf/83852/en.subject.pdf)
