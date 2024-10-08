@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <table  style="border: solid;">
+        <thead>
+            <tr>
+                <td>black</td>
+                <td>red</td>
+                <td>blue</td>
+                <td>green</td>
+            </tr>
+        </thead>
+        <tbody>
+            {% for i in 1..nb_of_colors %}
+                <tr>
+                    <td style="background-color: {{color1}}"></td>
+                    <td style="background-color: {{color2}}"></td>
+                    <td style="background-color: {{color3}}"></td>
+                    <td style="background-color: {{color4}}"></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
