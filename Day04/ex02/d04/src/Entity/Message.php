@@ -41,7 +41,7 @@ class Message
         return $this->isTimestamp;
     }
 
-    public function setTimestamp(bool $isTimestamp): static
+    public function setIsTimestamp(bool $isTimestamp): static
     {
         $this->isTimestamp = $isTimestamp;
 
