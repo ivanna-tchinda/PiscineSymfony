@@ -13,12 +13,14 @@ class DefaultController extends AbstractController
     #[Route('/e03', name: 'e03_home')]
     public function index(Environment $twig, Request $request)
     {
+        $bytes1 = random_bytes(1);
+        $bytes2 = random_bytes(2);
         return new Response($twig->render('table/index.html.twig', [
             'nb_of_colors' => $this->getParameter('e03.number_of_colors'),
-            'color1' => '#000000' . bin2hex(random_bytes(1)),
-            'color2' => '#FF0000' . bin2hex(random_bytes(1)),
-            'color3' => '#0000FF' . bin2hex(random_bytes(1)),
-            'color4' => '#00ff00' . bin2hex(random_bytes(1)),
+            'black' => random_int(0, 127),
+            'red' => random_int(0, 127),
+            'blue' => random_int(0, 127),
+            'green' => random_int(0, 127),
         ]));
     }
 }

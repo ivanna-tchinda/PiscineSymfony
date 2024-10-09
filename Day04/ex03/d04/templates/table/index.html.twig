@@ -13,10 +13,10 @@
         <tbody>
             {% for i in 1..nb_of_colors %}
                 <tr>
-                    <td style="background-color: {{color1}}"></td>
-                    <td style="background-color: {{color2}}"></td>
-                    <td style="background-color: {{color3}}"></td>
-                    <td style="background-color: {{color4}}"></td>
+                    <td style="background-color: rgb({{black * i}}, {{black * i}}, {{black * i}})"></td>
+                    <td style="background-color: rgb({{red * i}}, {{i}}, {{i}})"></td>
+                    <td style="background-color: rgb({{i}}, {{i}}, {{blue * i}})"></td>
+                    <td style="background-color: rgb({{i}}, {{green * i}}, {{i}})"></td>
                 </tr>
             {% endfor %}
         </tbody>
