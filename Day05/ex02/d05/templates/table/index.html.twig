@@ -2,6 +2,18 @@
 
 {% block body %}
 
-{{form(form)}}
+<form name="ex02_form" action="show_form" method="POST">
+  Username: <input type="text" name="username"><br>
+  Name: <input type="text" name="name"><br>
+  E-mail: <input type="text" name="email"><br>
+  <label for="enable">Enable?</label>
+  <select name="enable" id="enable">
+    <option value="true" selected>Yes</option>
+    <option value="false">No</option>
+  </select><br>
+  Birthdate : <input type="date" name="birthdate"><br>
+  Address : <input type="text" name="address"><br>
+  <input type="submit">
+</form>
 
 {% endblock %}

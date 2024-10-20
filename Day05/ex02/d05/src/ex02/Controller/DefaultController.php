@@ -18,27 +18,74 @@ class DefaultController extends AbstractController
     #[Route('/ex02', name: 'home')]
     public function index(Environment $twig, Request $request): Response
     {
-        $defaultData = ['message' => 'Type your message here'];
-        $form = $this->createFormBuilder($defaultData)
-            ->add('name', TextType::class)
-            ->add('email', EmailType::class)
-            ->add('message', TextareaType::class)
-            ->add('send', SubmitType::class)
-            ->getForm();
 
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            // data is an array with "name", "email", and "message" keys
-            $data = $form->getData();
-        }
-
-        return new Response($twig->render('table/index.html.twig', [
-            'form' => $form->createView()
-        ]));
+        $this->createDatabase();
+        $this->createTable();
+        return new Response($twig->render('table/index.html.twig'));
     }
 
-    #[Route('/create_database', name: 'create_database')]
+    #[Route('/show_form', name: 'show_form')]
+    public function showForm(): Response
+    {
+        $this->insertTable($_POST);
+        $this->getTable();
+        return new Response("name");
+    }
+
+    public function getTable()
+    {
+        $db_server = "localhost";
+        $db_user = $this->getParameter('db_user');
+        $db_pass = $this->getParameter('db_pass');
+        $db_name = "ex02";
+        try{
+            $connection = new \mysqli($db_server, $db_user, $db_pass, $db_name);
+        } catch (mysqli_sql_exception $e){
+            return new Response("Connection failed: Database doesn't exist");
+        }
+        $sql = "
+            SELECT * FROM users";
+        if ($connection->query($sql) === TRUE) {
+            $result = $connection->query($sql);
+            $connection->close();
+            echo "data:\n";
+        } else {
+            echo "Error getting infos from table: " . $connection->error;
+        }
+    }
+
+    public function insertTable($data)
+    {
+        $username = $data['username'];
+        $name = $data['name'];
+        $email = $data['email'];
+        $enable = $data['enable'];
+        $birthdate = $data['birthdate'];
+        $address = $data['address'];
+
+        $db_server = "localhost";
+        $db_user = $this->getParameter('db_user');
+        $db_pass = $this->getParameter('db_pass');
+        $db_name = "ex02";
+        try{
+            $connection = new \mysqli($db_server, $db_user, $db_pass, $db_name);
+        } catch (mysqli_sql_exception $e){
+            return new Response("Connection failed: Database doesn't exist");
+        }
+            $sql = "
+            INSERT INTO users (username, _name, email, _enable, birthdate, _address)
+            VALUES ('$username', '$name', '$email', $enable, '$birthdate', '$address')";
+    
+            if ($connection->query($sql) === TRUE) {
+                $connection->close();
+                echo "Successfully added in table";
+            } else {
+                $connection->close();
+                echo "Error inserting in table: " . $connection->error;
+            }
+        return "$birthdate";
+    }
+    
     public function createDatabase(): Response
     {
         $db_server = "localhost";
@@ -64,7 +111,6 @@ class DefaultController extends AbstractController
         }
     }
 
-    #[Route('/create_table', name: 'create_table')]
     public function createTable(): Response
     {
         $db_server = "localhost";
@@ -78,7 +124,7 @@ class DefaultController extends AbstractController
             return new Response("Connection failed: Database doesn't exist");
         }
         $sql = "
-        CREATE TABLE IF NOT EXISTS Users (
+        CREATE TABLE IF NOT EXISTS users (
             id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
             username VARCHAR(30) NOT NULL,
             _name VARCHAR(30) NOT NULL,
