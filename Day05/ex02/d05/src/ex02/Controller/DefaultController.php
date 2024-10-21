@@ -45,10 +45,27 @@ class DefaultController extends AbstractController
         }
         $sql = "
             SELECT * FROM users";
-        if ($connection->query($sql) === TRUE) {
-            $result = $connection->query($sql);
+        if ($result = $connection->query($sql)) {
             $connection->close();
-            echo "data:\n";
+            echo "<table style='border: solid;'>\n";
+            while ($row = $result->fetch_assoc()) {
+                echo "<tr style='border: solid;>\n";
+                $field1name = $row["username"];
+                $field2name = $row["_name"];
+                $field3name = $row["email"];
+                $field4name = $row["_enable"];
+                $field5name = $row["birthdate"];
+                $field6name = $row["_address"];
+                echo "<td style='border: solid;'>$field1name</td>\n";
+                echo "<td style='border: solid;'>$field2name</td>\n";
+                echo "<td style='border: solid;'>$field3name</td>\n";
+                echo "<td style='border: solid;'>$field4name</td>\n";
+                echo "<td style='border: solid;'>$field5name</td>\n";
+                echo "<td style='border: solid;'>$field6name</td>\n";
+                echo "</tr>\n";
+            }
+            echo "</table>\n";
+
         } else {
             echo "Error getting infos from table: " . $connection->error;
         }
@@ -83,7 +100,6 @@ class DefaultController extends AbstractController
                 $connection->close();
                 echo "Error inserting in table: " . $connection->error;
             }
-        return "$birthdate";
     }
     
     public function createDatabase(): Response
