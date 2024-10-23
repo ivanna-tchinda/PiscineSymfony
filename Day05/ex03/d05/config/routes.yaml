@@ -1,0 +1,13 @@
+controllers:
+    resource:
+        path: ../src/Controller/
+        namespace: App\Controller
+    type: attribute
+
+ex03_bundle:
+    resource: '../src/ex03/Controller/'
+    type: annotation
+
+form_success:
+    resource: '../src/ex03/'
+    type: annotation
