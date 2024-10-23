@@ -7,18 +7,12 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Twig\Environment;
-use mysqli;
 use mysqli_sql_exception;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\EmailType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 class DefaultController extends AbstractController
 {
     #[Route('/ex02', name: 'home')]
-    public function index(Environment $twig, Request $request): Response
+    public function index(Environment $twig): Response
     {
-
         $this->createDatabase();
         $this->createTable();
         return new Response($twig->render('table/index.html.twig'));
@@ -29,7 +23,7 @@ class DefaultController extends AbstractController
     {
         $this->insertTable($_POST);
         $this->getTable();
-        return new Response("name");
+        return new Response("");
     }
 
     public function getTable()
@@ -38,30 +32,44 @@ class DefaultController extends AbstractController
         $db_user = $this->getParameter('db_user');
         $db_pass = $this->getParameter('db_pass');
         $db_name = "ex02";
+
         try{
             $connection = new \mysqli($db_server, $db_user, $db_pass, $db_name);
         } catch (mysqli_sql_exception $e){
             return new Response("Connection failed: Database doesn't exist");
         }
-        $sql = "
-            SELECT * FROM users";
+
+        $sql = "SELECT * FROM users";
         if ($result = $connection->query($sql)) {
             $connection->close();
             echo "<table style='border: solid;'>\n";
+            echo "<tr style='border: solid;'>\n";
+            echo "<td style='border: solid;'>Id</td>\n";
+            echo "<td style='border: solid;'>Username</td>\n";
+            echo "<td style='border: solid;'>Name</td>\n";
+            echo "<td style='border: solid;'>Email</td>\n";
+            echo "<td style='border: solid;'>Enable</td>\n";
+            echo "<td style='border: solid;'>Birthdate</td>\n";
+            echo "<td style='border: solid;'>Address</td>\n";
+            echo "</tr>\n";
             while ($row = $result->fetch_assoc()) {
-                echo "<tr style='border: solid;>\n";
+                echo "<tr style='border: solid;'>\n";
+                $field0name = $row["id"];
                 $field1name = $row["username"];
                 $field2name = $row["_name"];
                 $field3name = $row["email"];
-                $field4name = $row["_enable"];
+                $field4name = $row["_enable"] == 1 ? "Yes" : "No";
                 $field5name = $row["birthdate"];
                 $field6name = $row["_address"];
+
+                echo "<td style='border: solid;'>$field0name</td>\n";
                 echo "<td style='border: solid;'>$field1name</td>\n";
                 echo "<td style='border: solid;'>$field2name</td>\n";
                 echo "<td style='border: solid;'>$field3name</td>\n";
                 echo "<td style='border: solid;'>$field4name</td>\n";
                 echo "<td style='border: solid;'>$field5name</td>\n";
                 echo "<td style='border: solid;'>$field6name</td>\n";
+                
                 echo "</tr>\n";
             }
             echo "</table>\n";
@@ -84,6 +92,7 @@ class DefaultController extends AbstractController
         $db_user = $this->getParameter('db_user');
         $db_pass = $this->getParameter('db_pass');
         $db_name = "ex02";
+
         try{
             $connection = new \mysqli($db_server, $db_user, $db_pass, $db_name);
         } catch (mysqli_sql_exception $e){
@@ -91,11 +100,11 @@ class DefaultController extends AbstractController
         }
             $sql = "
             INSERT INTO users (username, _name, email, _enable, birthdate, _address)
-            VALUES ('$username', '$name', '$email', $enable, '$birthdate', '$address')";
+            VALUES ('$username', '$name', '$email', $enable, '$birthdate', '$address');";
     
             if ($connection->query($sql) === TRUE) {
                 $connection->close();
-                echo "Successfully added in table";
+                echo "Successfully added in table!";
             } else {
                 $connection->close();
                 echo "Error inserting in table: " . $connection->error;
@@ -146,7 +155,7 @@ class DefaultController extends AbstractController
             _name VARCHAR(30) NOT NULL,
             email VARCHAR(50),
             _enable BOOLEAN,
-            birthdate DATETIME,
+            birthdate DATE,
             _address LONGTEXT
         )";
 
