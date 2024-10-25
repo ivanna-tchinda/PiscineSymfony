@@ -4,6 +4,6 @@ controllers:
         namespace: App\Controller
     type: attribute
 
-ex03_bundle:
-    resource: '../src/ex03/Controller/'
+ex04_bundle:
+    resource: '../src/ex04/Controller/'
     type: annotation
