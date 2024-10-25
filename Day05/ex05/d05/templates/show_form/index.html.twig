@@ -1,0 +1,21 @@
+{% extends 'base.html.twig'%}
+{% block body %}
+<a href="/ex03">back to form<a/>
+<p>TABLE</p>
+<table>
+    <tr>
+        <th>Id</th>
+        <th>Username</th>
+        <th>Name</th>
+        <th>Enable</th>
+    </tr>
+    {% for user in users %}
+    <tr>
+        <td>{{ user.getId() }}</td>
+        <td>{{ user.getUsername() }}</td>
+        <td>{{ user.getName() }}</td>
+        <td>{{ user.isEnable() == 1 ? "Yes" : "No" }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}
