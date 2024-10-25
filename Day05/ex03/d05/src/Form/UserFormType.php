@@ -7,6 +7,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 class UserFormType extends AbstractType
 {
@@ -16,7 +17,13 @@ class UserFormType extends AbstractType
             ->add('username')
             ->add('name')
             ->add('email')
-            ->add('enable')
+            ->add('enable',
+            ChoiceType::class, 
+            [ 'choices' => [
+                'Yes' => true,
+                'No' => false
+            ],
+            ])
             ->add('birthdate', null, [
                 'widget' => 'single_text',
             ])

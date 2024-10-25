@@ -2,18 +2,22 @@
 namespace App\Service;
 
 use App\Entity\User;
-use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Routing\Annotation\Route;
 use Twig\Environment;
 use Symfony\Component\HttpFoundation\Response;
-
 class UserService
 {
 
-#[Route('/form_success', name: 'form_success')]
-    public function index(Environment $twig): Response
+    #[Route('/form_success', name: 'form_success')]
+    public function index(Environment $twig, User $user, EntityManagerInterface $entity): Response
     {
-        return $this->render('show_form/index.html.twig');
+        $repo = $entity->getRepository(User::class)->findAll();
+        $entity->persist($user);
+        $entity->flush();
+        return new Response($twig->render('show_form/index.html.twig', [
+            'users' => $repo,
+        ]));
     }
 
 }
