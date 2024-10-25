@@ -1,0 +1,27 @@
+{% extends 'base.html.twig'%}
+{% block body %}
+<a href="/ex04">back to form<a/>
+<p>TABLE</p>
+<table>
+    <tr>
+        <th>Id</th>
+        <th>Username</th>
+        <th>Name</th>
+        <th>Enable</th>
+        <th>Email</th>
+        <th>Birthdate</th>
+        <th>Address</th>
+    </tr>
+    {% for user in users %}
+    <tr>
+        <td><a href="/delete/{{user["id"]}}">{{ user["id"] }}<a></td>
+        <td>{{ user["username"] }}</td>
+        <td>{{ user["_name"] }}</td>
+        <td>{{ user["_enable"] }}</td>
+        <td>{{ user["email"] }}</td>
+        <td>{{ user["birthdate"] }}</td>
+        <td>{{ user["_address"] }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}
