@@ -69,17 +69,17 @@ class DefaultController extends AbstractController
             return new Response("Connection failed: Database doesn't exist");
         }
 
-        $sql = "DELETE FROM users WHERE id=$id";
-        if ($result = $connection->query($sql)) {
-            $connection->close();
-            return new Response($twig->render('success_delete/index.html.twig', [
-                'id' => $id
-            ]));
+        if($result = $connection->query("SELECT * FROM users WHERE id=$id")){
+            if ($connection->query("DELETE FROM users WHERE id=$id") === TRUE && $result->num_rows) {
+                $connection->close();
+                return new Response($twig->render('success_delete/index.html.twig', [
+                    'id' => $id
+                ]));
+    
+            }
 
-        } else {
-            return new Response("Error getting infos from table: " . $connection->error);
         }
-        return new Response('delete');
+        return new Response("Id $id is not in the table and cannot be removed");
     }
 
     public function insertTable($data, Environment $twig): Response
