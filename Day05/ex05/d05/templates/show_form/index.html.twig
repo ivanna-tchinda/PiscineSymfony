@@ -1,6 +1,6 @@
 {% extends 'base.html.twig'%}
 {% block body %}
-<a href="/ex03">back to form<a/>
+<a href="/ex05">back to form<a/>
 <p>TABLE</p>
 <table>
     <tr>
@@ -8,6 +8,7 @@
         <th>Username</th>
         <th>Name</th>
         <th>Enable</th>
+        <th>Action</th>
     </tr>
     {% for user in users %}
     <tr>
@@ -15,6 +16,7 @@
         <td>{{ user.getUsername() }}</td>
         <td>{{ user.getName() }}</td>
         <td>{{ user.isEnable() == 1 ? "Yes" : "No" }}</td>
+        <td><a href="/delete/{{ user.getId() }}">Delete</a></td>
     </tr>
     {% endfor %}
 </table>

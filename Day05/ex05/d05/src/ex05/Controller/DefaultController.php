@@ -27,4 +27,26 @@ class DefaultController extends AbstractController
             'user' => $form->createView(),
         ]));
     }
+
+    #[Route('/show_form', name: 'show_form')]
+    public function show_form(Environment $twig, EntityManagerInterface $entity)
+    {
+        $repo = $entity->getRepository(User::class)->findAll();
+        return new Response($twig->render('show_form/index.html.twig', [
+            'users' => $repo,
+        ]));
+    }
+
+    #[Route('/delete/{id}', name: 'delete_id')]
+    public function deleteId(int $id, EntityManagerInterface $entity, Environment $twig)
+    {
+        $user = $entity->getRepository(User::class)->find($id);
+        $entity->remove($user);
+        $entity->flush();
+        return new Response($twig->render('delete_user/index.html.twig', [
+            "id" => $id,
+        ]));
+    }
+    
+
 }
