@@ -24,6 +24,12 @@ class DefaultController extends AbstractController
         return $this->insertTable($_POST, $twig);
     }
 
+    #[Route('/success_update', name: 'success_update')]
+    public function updateUser(Environment $twig): Response
+    {
+        return $this->updateTable($_POST, $twig);
+    }
+
     #[Route('/show_form', name: 'show_form')]
     public function showForm(Environment $twig): Response
     {
@@ -55,7 +61,7 @@ class DefaultController extends AbstractController
         }
     }
 
-    #[Route('/update/{id}', name: 'update_id')]
+    #[Route('/update_{id}', name: 'update_id')]
     public function updateId(int $id, Environment $twig) 
     {
         $db_server = "localhost";
@@ -69,19 +75,18 @@ class DefaultController extends AbstractController
             return new Response("Connection failed: Database doesn't exist");
         }
 
-        if($result = $connection->query("SELECT * FROM users WHERE id=$id")){
-            // if ($connection->query("DELETE FROM users WHERE id=$id") === TRUE && $result->num_rows) {
-            //     $connection->close();
-            //     return new Response($twig->render('success_update/index.html.twig', [
-            //         'id' => $id
-            //     ]));
-    
-            // }
-
-        }
-        var_dump($result);
+        $result = $connection->query("SELECT * FROM users WHERE id=$id");
+        if(!$result)
+            return new Response("Error: table has no user with id $id");
+        $user = $result->fetch_all()[0];
         return new Response($twig->render('update_user/index.html.twig', [
-            'user' => $result
+            'id' => $user[0],
+            'username' => $user[1],
+            'name' => $user[2],
+            'mail' => $user[3],
+            'enable' => $user[4],
+            'birthdate' => $user[5],
+            'address' => $user[6],
         ]));
     }
 
@@ -111,6 +116,42 @@ class DefaultController extends AbstractController
 
         }
         return new Response("Id $id is not in the table and cannot be removed");
+    }
+
+    public function updateTable($data, Environment $twig): Response
+    {
+        $id = $data["id"];
+        $username = $data['username'];
+        $name = $data['name'];
+        $email = $data['email'];
+        $enable = $data['enable'];
+        $birthdate = $data['birthdate'];
+        $address = $data['address'];
+
+        $db_server = "localhost";
+        $db_user = $this->getParameter('db_user');
+        $db_pass = $this->getParameter('db_pass');
+        $db_name = "ex06";
+
+        try{
+            $connection = new \mysqli($db_server, $db_user, $db_pass, $db_name);
+        } catch (mysqli_sql_exception $e){
+            return new Response("Connection failed: Database doesn't exist");
+        }
+            $sql = "UPDATE users 
+            SET username='$username', _name='$name', email='$email', birthdate='$birthdate', _enable=$enable, _address='$address' 
+            WHERE id=$id;";
+    
+            if ($connection->query($sql) === TRUE) {
+                $connection->close();
+                return new Response($twig->render('success_update/index.html.twig', [
+                    "id" => $id,
+                ]));
+
+            } else {
+                $connection->close();
+                echo "Error inserting in table: " . $connection->error;
+            }
     }
 
     public function insertTable($data, Environment $twig): Response

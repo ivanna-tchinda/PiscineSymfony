@@ -18,11 +18,11 @@
         <td>{{ user["id"] }}</td>
         <td>{{ user["username"] }}</td>
         <td>{{ user["_name"] }}</td>
-        <td>{{ user["_enable"] }}</td>
+        <td>{% if user["_enable"] == 1 %} Yes {% else %} No {% endif %}</td>
         <td>{{ user["email"] }}</td>
         <td>{{ user["birthdate"] }}</td>
         <td>{{ user["_address"] }}</td>
-        <td><a href="/delete/{{user["id"]}}">Delete</a> <a href="/update/{{user["id"]}}">Update</a></td>
+        <td><a href="/delete/{{user["id"]}}">Delete</a> <a href="/update_{{ user["id"] }}">Update</a></td>
         
     </tr>
     {% endfor %}
