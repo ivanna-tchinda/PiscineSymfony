@@ -1,0 +1,111 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+<div style="display: flex; margin-top: 20">
+
+  <div id="table-1" style="margin-right: 30">
+  {% if table %}
+
+  <h3>TABLE PERSONS</h3>
+  <table>
+      <tr>
+          <th>Id</th>
+          <th>Username</th>
+          <th>Name</th>
+          <th>Enable</th>
+          <th>Email</th>
+          <th>Birthdate</th>
+          <th>Action</th>
+      </tr>
+      {% for person in persons %}
+      <tr>
+          <td>{{ person["id"] }}</td>
+          <td>{{ person["username"] }}</td>
+          <td>{{ person["_name"] }}</td>
+          <td>{% if person["_enable"] == 1 %} Yes {% else %} No {% endif %}</td>
+          <td>{{ person["email"] }}</td>
+          <td>{{ person["birthdate"] }}</td>
+          <td><a href="/delete/{{person["id"]}}">Delete</a> <a href="/update_{{ person["id"] }}">Update</a><a>Add column</a></td>
+          
+      </tr>
+      {% endfor %}
+  </table>
+
+  <form name="ex08_form1" action="success_insert" method="POST">
+    Username: <input type="text" name="username" required><br>
+    Name: <input type="text" name="name" required><br>
+    E-mail: <input type="text" name="email" required><br>
+    <label for="enable">Enable?</label>
+    <select name="enable" id="enable">
+      <option value="true" selected>Yes</option>
+      <option value="false">No</option>
+    </select><br>
+    Birthdate : <input type="date" name="birthdate" required><br>
+    <input type="submit">
+  </form>
+
+  {% else %}
+
+  <button><a href="/create_table">Create table Persons</a></button>
+
+  {% endif %}
+
+  </div>
+
+  <div id="table-2" style="margin-right: 30">
+  <h3>TABLE BANK_ACCOUNTS</h3>
+  <table>
+      <tr>
+          <th>Id</th>
+          <th>Username</th>
+          <th>Name</th>
+          <th>Enable</th>
+          <th>Email</th>
+          <th>Birthdate</th>
+          <th>Action</th>
+      </tr>
+      {% for bamk_account in bamk_accounts %}
+      <tr>
+          <td>{{ person["id"] }}</td>
+          <td>{{ person["username"] }}</td>
+          <td>{{ person["_name"] }}</td>
+          <td>{% if person["_enable"] == 1 %} Yes {% else %} No {% endif %}</td>
+          <td>{{ person["email"] }}</td>
+          <td>{{ person["birthdate"] }}</td>
+          <td><a href="/delete/{{person["id"]}}">Delete</a> <a href="/update_{{ person["id"] }}">Update</a></td>
+          
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+
+  <div id="table-3" style="margin-right: 30">
+  <h3>TABLE ADDRESSES</h3>
+  <table>
+      <tr>
+          <th>Id</th>
+          <th>Username</th>
+          <th>Name</th>
+          <th>Enable</th>
+          <th>Email</th>
+          <th>Birthdate</th>
+          <th>Action</th>
+      </tr>
+      {% for address in addresses %}
+      <tr>
+          <td>{{ person["id"] }}</td>
+          <td>{{ person["username"] }}</td>
+          <td>{{ person["_name"] }}</td>
+          <td>{% if person["_enable"] == 1 %} Yes {% else %} No {% endif %}</td>
+          <td>{{ person["email"] }}</td>
+          <td>{{ person["birthdate"] }}</td>
+          <td><a href="/delete/{{person["id"]}}">Delete</a> <a href="/update_{{ person["id"] }}">Update</a></td>
+          
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+</div>
+
+{% endblock %}

@@ -44,7 +44,7 @@ class DefaultController extends AbstractController
         try {
             $connection->query($sql);
             return new Response("Table Users created successfully");
-        } catch (Exception $e){
+        } catch (\Exception $e){
             return new Response("Error creating table: $e");
         }
         $connection->close();
