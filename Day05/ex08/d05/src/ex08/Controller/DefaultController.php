@@ -16,14 +16,108 @@ class DefaultController extends AbstractController
         $this->create_database();
         $table = $this->check_table();
         $persons = $this->getTable($twig);
-        $bank_accounts = $this->get_bank();
-        $addresses = $this->get_address();
+        // $bank_accounts = $this->get_bank();
+        // $addresses = $this->get_address();
+        $columns = [];
+        if($persons)
+        while ($col = mysqli_fetch_field($persons))
+            array_push($columns, $col->name);
         return new Response($twig->render('home/index.html.twig', [
             'table' => $table,
             'persons' => $persons,
-            'bank_accounts' => $bank_accounts,
-            'addresses' => $addresses
+            'columns' => $columns,
+            // 'bank_accounts' => $bank_accounts,
+            // 'addresses' => $addresses
         ]));
+    }
+    #[Route('/add_column', name: 'add_column')]
+    public function add_column(Environment $twig)
+    {
+        return new Response($twig->render('add_column/index.html.twig'));
+    }
+
+    #[Route('/add_column_success', name: 'add_column_success')]
+    public function add_column_success(Environment $twig)
+    {
+        $column_name = $_POST["column_name"];
+        $column_type = $_POST["column_type"];
+        $connection = $this->create_connection();
+
+        $res = mysqli_query($connection, 'SELECT * FROM persons');
+        while ($property = mysqli_fetch_field($res))
+            $name = $property->name;
+        $sql = "
+        ALTER TABLE persons ADD $column_name $column_type after $name";
+        try {
+            $result = $connection->query($sql);
+            $connection->close();
+            return new Response($twig->render('success_add_column/index.html.twig', [
+                'column_name' => $column_name
+            ]));
+        } catch (mysqli_sql_exception $e) {
+            $connection->close();
+            return new Response("Connection failed: ERROR WHILE CREATING COLUMN");
+        }
+    }
+
+    public function get_address()
+    {
+        $connection = $this->create_connection();
+        $sql = "
+        CREATE TABLE IF NOT EXISTS addresses (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            FOREIGN KEY(_name) REFERENCES persons(_name)
+        )";
+
+        if ($connection->query($sql) === TRUE) {
+            $connection->close();
+            return new Response("Table Addresses created successfully.\n");
+        } else {
+            $connection->close();
+            echo "Error creating table: " . $connection->error;
+        }
+    }
+
+    public function get_bank()
+    {
+        $connection = $this->create_connection();
+        $sql = "
+        CREATE TABLE IF NOT EXISTS bank_accounts (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            ADD CONSTRAINT name_account,
+            FOREIGN KEY(_name) REFERENCES persons(_name)
+        )";
+
+        if ($connection->query($sql) === TRUE) {
+            $connection->close();
+            return new Response("Table Bank_accounts created successfully.\n");
+        } else {
+            $connection->close();
+            echo "Error creating table: " . $connection->error;
+        }
+    }
+
+    #[Route('/create_table', name: 'create_table')]
+    public function create_table()
+    {
+        $connection = $this->create_connection();
+        $sql = "
+        CREATE TABLE IF NOT EXISTS persons (
+            id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+            username VARCHAR(30) NOT NULL,
+            _name VARCHAR(30) NOT NULL,
+            email VARCHAR(50),
+            _enable BOOLEAN,
+            birthdate DATE
+        )";
+
+        if ($connection->query($sql) === TRUE) {
+            $connection->close();
+            return new Response("Table 'Persons' created successfully.\n");
+        } else {
+            $connection->close();
+            echo "Error creating table: " . $connection->error;
+        }
     }
 
     #[Route('/success_insert', name: 'success_insert')]
@@ -39,7 +133,7 @@ class DefaultController extends AbstractController
     }
 
     #[Route('/show_form', name: 'show_form')]
-    public function showForm(Environment $twig): Response
+    public function showForm(Environment $twig)
     {
         return $this->getTable($twig);
     }
@@ -63,9 +157,12 @@ class DefaultController extends AbstractController
     {
         $connection = $this->create_connection();
         $sql = "SELECT * FROM persons";
-        if ($result = $connection->query($sql)) 
+        try{
+            $result = $connection->query($sql);
             return 1;
-        return 0;
+        } catch (mysqli_sql_exception $e){
+            return 0;
+        }
     }
 
     public function getTable(Environment $twig)
@@ -73,12 +170,13 @@ class DefaultController extends AbstractController
         $connection = $this->create_connection();
 
         $sql = "SELECT * FROM persons";
-        if ($result = $connection->query($sql)) {
+        try{
+            $result = $connection->query($sql);
             $connection->close();
             return $result;
 
-        } else {
-            return new Response("Error getting infos from table: " . $connection->error);
+        }  catch (mysqli_sql_exception $e) {
+            return 0;
         }
     }
 
@@ -150,7 +248,7 @@ class DefaultController extends AbstractController
     public function insertTable($data, Environment $twig): Response
     {
         $username = $data['username'];
-        $name = $data['name'];
+        $name = $data['_name'];
         $email = $data['email'];
         $enable = $data['enable'];
         $birthdate = $data['birthdate'];
@@ -197,26 +295,4 @@ class DefaultController extends AbstractController
         }
     }
 
-    #[Route('/create_table', name: 'create_table')]
-    public function create_table()
-    {
-        $connection = $this->create_connection();
-        $sql = "
-        CREATE TABLE IF NOT EXISTS persons (
-            id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-            username VARCHAR(30) NOT NULL,
-            _name VARCHAR(30) NOT NULL,
-            email VARCHAR(50),
-            _enable BOOLEAN,
-            birthdate DATE
-        )";
-
-        if ($connection->query($sql) === TRUE) {
-            $connection->close();
-            return new Response("Table 'Persons' created successfully.\n");
-        } else {
-            $connection->close();
-            echo "Error creating table: " . $connection->error;
-        }
-    }
 }

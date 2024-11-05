@@ -10,38 +10,40 @@
   <h3>TABLE PERSONS</h3>
   <table>
       <tr>
-          <th>Id</th>
-          <th>Username</th>
-          <th>Name</th>
-          <th>Enable</th>
-          <th>Email</th>
-          <th>Birthdate</th>
+        {% for column in columns %}
+          <th>{{column}}</th>
+        {% endfor %}
           <th>Action</th>
       </tr>
       {% for person in persons %}
       <tr>
-          <td>{{ person["id"] }}</td>
-          <td>{{ person["username"] }}</td>
-          <td>{{ person["_name"] }}</td>
+        {% for column in columns %}
+          {% if column == '_enable' %}
           <td>{% if person["_enable"] == 1 %} Yes {% else %} No {% endif %}</td>
-          <td>{{ person["email"] }}</td>
-          <td>{{ person["birthdate"] }}</td>
-          <td><a href="/delete/{{person["id"]}}">Delete</a> <a href="/update_{{ person["id"] }}">Update</a><a>Add column</a></td>
+          {% else %}
+          <td>{{person[column]}}</td>
+          {% endif %}
+        {% endfor %}
+          <td><a href="/delete/{{person["id"]}}">Delete</a> <a href="/update_{{ person["id"] }}">Update</a> <a href="/add_column">Add column</a></td>
           
       </tr>
       {% endfor %}
   </table>
 
   <form name="ex08_form1" action="success_insert" method="POST">
-    Username: <input type="text" name="username" required><br>
-    Name: <input type="text" name="name" required><br>
-    E-mail: <input type="text" name="email" required><br>
-    <label for="enable">Enable?</label>
-    <select name="enable" id="enable">
-      <option value="true" selected>Yes</option>
-      <option value="false">No</option>
-    </select><br>
-    Birthdate : <input type="date" name="birthdate" required><br>
+    {% for column in columns %}
+      {% if column == '_enable' %}
+        <label>Enable?:</label>
+        <select name="enable" id="enable">
+          <option value="true" selected>Yes</option>
+          <option value="false">No</option>
+        </select><br>
+      {% elseif column == 'birthdate' %}
+        {{column}}: <input type="date" name="{{column}}" required><br>
+      {% else %}
+        {{column}}: <input type="text" name="{{column}}" required><br>
+      {% endif %}
+    {% endfor %}
     <input type="submit">
   </form>
 
@@ -53,7 +55,7 @@
 
   </div>
 
-  <div id="table-2" style="margin-right: 30">
+  {# <div id="table-2" style="margin-right: 30">
   <h3>TABLE BANK_ACCOUNTS</h3>
   <table>
       <tr>
@@ -105,7 +107,7 @@
       </tr>
       {% endfor %}
     </table>
-  </div>
+  </div> #}
 </div>
 
 {% endblock %}
