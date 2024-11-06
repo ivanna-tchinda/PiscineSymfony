@@ -4,10 +4,11 @@
 
 <div style="display: flex; margin-top: 20">
 
-  <div id="table-1" style="margin-right: 30">
+  <div id="table_persons" style="margin-right: 30">
   {% if table %}
 
   <h3>TABLE PERSONS</h3>
+  <a href="/add_column">Add column</a>
   <table>
       <tr>
         {% for column in columns %}
@@ -24,17 +25,18 @@
           <td>{{person[column]}}</td>
           {% endif %}
         {% endfor %}
-          <td><a href="/delete/{{person["id"]}}">Delete</a> <a href="/update_{{ person["id"] }}">Update</a> <a href="/add_column">Add column</a></td>
+          <td><a href="/delete/{{person["person_id"]}}">Delete</a> <a href="/update_{{ person["person_id"] }}">Update</a> </td>
           
       </tr>
       {% endfor %}
   </table>
 
-  <form name="ex08_form1" action="success_insert" method="POST">
+  <form name="form_persons" action="success_insert" method="POST">
     {% for column in columns %}
-      {% if column == '_enable' %}
+      {% if column == 'person_id' %}
+      {% elseif column == '_enable' %}
         <label>Enable?:</label>
-        <select name="enable" id="enable">
+        <select name="_enable" id="_enable">
           <option value="true" selected>Yes</option>
           <option value="false">No</option>
         </select><br>
@@ -55,59 +57,41 @@
 
   </div>
 
-  {# <div id="table-2" style="margin-right: 30">
+  <div id="table_bank_accounts" style="margin-right: 30">
   <h3>TABLE BANK_ACCOUNTS</h3>
   <table>
       <tr>
-          <th>Id</th>
-          <th>Username</th>
-          <th>Name</th>
-          <th>Enable</th>
-          <th>Email</th>
-          <th>Birthdate</th>
-          <th>Action</th>
+        {% for bank_account in bank_accounts %}
+          <th>{{bank_account}}</th>
+        {% endfor %}
       </tr>
-      {% for bamk_account in bamk_accounts %}
+      {% for bank_account in bank_accounts %}
       <tr>
-          <td>{{ person["id"] }}</td>
-          <td>{{ person["username"] }}</td>
-          <td>{{ person["_name"] }}</td>
-          <td>{% if person["_enable"] == 1 %} Yes {% else %} No {% endif %}</td>
-          <td>{{ person["email"] }}</td>
-          <td>{{ person["birthdate"] }}</td>
-          <td><a href="/delete/{{person["id"]}}">Delete</a> <a href="/update_{{ person["id"] }}">Update</a></td>
-          
+        {% for column in columns_bank %}
+          <td>{{bank_account[column]}}</td>
+        {% endfor %}
       </tr>
       {% endfor %}
-    </table>
+  </table>
   </div>
 
-  <div id="table-3" style="margin-right: 30">
+  <div id="table_addresses" style="margin-right: 30">
   <h3>TABLE ADDRESSES</h3>
   <table>
       <tr>
-          <th>Id</th>
-          <th>Username</th>
-          <th>Name</th>
-          <th>Enable</th>
-          <th>Email</th>
-          <th>Birthdate</th>
-          <th>Action</th>
+        {% for column in columns_addresses %}
+          <th>{{column}}</th>
+        {% endfor %}
       </tr>
       {% for address in addresses %}
       <tr>
-          <td>{{ person["id"] }}</td>
-          <td>{{ person["username"] }}</td>
-          <td>{{ person["_name"] }}</td>
-          <td>{% if person["_enable"] == 1 %} Yes {% else %} No {% endif %}</td>
-          <td>{{ person["email"] }}</td>
-          <td>{{ person["birthdate"] }}</td>
-          <td><a href="/delete/{{person["id"]}}">Delete</a> <a href="/update_{{ person["id"] }}">Update</a></td>
-          
+        {% for column in columns_addresses %}
+          <td>{{address[column]}}</td>
+        {% endfor %}
       </tr>
       {% endfor %}
-    </table>
-  </div> #}
+  </table>
+  </div>
 </div>
 
 {% endblock %}
