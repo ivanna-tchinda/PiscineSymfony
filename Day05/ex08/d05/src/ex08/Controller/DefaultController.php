@@ -72,76 +72,9 @@ class DefaultController extends AbstractController
         }
     }
 
-    public function create_bank()
-    {
-        $connection = $this->create_connection();
-        $sql = "
-        CREATE TABLE IF NOT EXISTS bank_accounts (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            bank_account_id INT(6),
-            FOREIGN KEY (bank_account_id) REFERENCES persons(bank_account_id)
-        )";
+    
 
-        if ($connection->query($sql) === TRUE) {
-            $connection->close();
-            return new Response("Table Bank_accounts created successfully.\n");
-        } else {
-            $connection->close();
-            echo "Error creating table bank_accounts: " . $connection->error . "<br>";
-        }
-    }
-
-    public function get_bank()
-    {
-        $this->create_bank();
-        $connection = $this->create_connection();
-
-        $sql = "SELECT * FROM bank_accounts";
-        try{
-            $result = $connection->query($sql);
-            $connection->close();
-            return $result;
-
-        }  catch (mysqli_sql_exception $e) {
-            return 0;
-        }
-    }
-
-    public function create_address()
-    {
-        $connection = $this->create_connection();
-        $sql = "
-        CREATE TABLE IF NOT EXISTS addresses (
-            addressID INT AUTO_INCREMENT PRIMARY KEY,
-            address VARCHAR(255),
-            person_id INT(6) UNSIGNED,
-            FOREIGN KEY (person_id) REFERENCES persons(person_id)
-        )";
-
-        try{
-            $connection->query($sql) === TRUE;
-            $connection->close();
-            return new Response("Table Bank_accounts created successfully.\n");
-        } catch (mysqli_sql_exception $e) {
-            echo "Error creating table addresses: " . $connection->error . "<br>";
-        }
-    }
-
-    public function get_address()
-    {
-        $this->create_address();
-        $connection = $this->create_connection();
-
-        $sql = "SELECT * FROM addresses";
-        try{
-            $result = $connection->query($sql);
-            $connection->close();
-            return $result;
-
-        }  catch (mysqli_sql_exception $e) {
-            return 0;
-        }
-    }
+    
 
     #[Route('/create_table', name: 'create_table')]
     public function create_table()
@@ -159,7 +92,7 @@ class DefaultController extends AbstractController
 
         if ($connection->query($sql) === TRUE) {
             $connection->close();
-            return new Response("Table 'Persons' created successfully.\n");
+            return new Response("Table 'Persons' created successfully.<a href='/ex08'>Back</a><br>");
         } else {
             $connection->close();
             echo "Error creating table persons: " . $connection->error . "<br>";
@@ -251,8 +184,8 @@ class DefaultController extends AbstractController
     {
         $connection = $this->create_connection();
 
-        if($result = $connection->query("SELECT * FROM persons WHERE id=$id")){
-            if ($connection->query("DELETE FROM persons WHERE id=$id") === TRUE && $result->num_rows) {
+        if($result = $connection->query("SELECT * FROM persons WHERE person_id=$id")){
+            if ($connection->query("DELETE FROM persons WHERE person_id=$id") === TRUE && $result->num_rows) {
                 $connection->close();
                 return new Response($twig->render('success_delete/index.html.twig', [
                     'id' => $id
@@ -291,69 +224,17 @@ class DefaultController extends AbstractController
         }
     }
 
-    public function getLastRecord()
-    {
-        $connection = $this->create_connection();
-        $sql = "SELECT * FROM persons ORDER BY person_id DESC LIMIT 1;";
-        try {
-            $result = $connection->query($sql);
-            $row = $result->fetch_assoc();
-            $connection->close();
-            return [$row['person_id'], $row['address']];
-        } catch (mysqli_sql_exception $e) {
-            $connection->close();
-            echo "$e <br>";
-        }
-    }
+    
 
-    public function check_val_address()
-    {
-        $connection = $this->create_connection();
-        $last_line = $this->getLastRecord();
-        $this->create_address();
+    
 
-        $address = $last_line[1];
-        $person_id = $last_line[0];
-        $sql = "
-        INSERT INTO addresses (address, person_id)
-        VALUES ('$address', '$person_id');";
-        if ($connection->query($sql) === TRUE) {
-            $connection->close();
-            echo "added a row to addresses<br>";
 
-        } else {
-            $connection->close();
-            echo "Error inserting in table addresses: " . $connection->error;
-        }
-    }
-
-    public function check_val_bank()
-    {
-        $connection = $this->create_connection();
-        $last_line = $this->getLastRecord();
-        $this->create_bank();
-
-        $bank_account_id = $last_line[1];
-        $person_id = $last_line[0];
-        $sql = "
-        INSERT INTO bank_accounts (bank_account_id, person_id)
-        VALUES ('$bank_account_id', '$person_id');";
-        if ($connection->query($sql) === TRUE) {
-            $connection->close();
-            echo "added a row to bank_accounts<br>";
-
-        } else {
-            $connection->close();
-            echo "Error inserting in table addresses: " . $connection->error;
-        }
-    }
 
     public function insertTable($data, Environment $twig): Response
     {
         $col_name = "";
         $values = "";
         foreach ($data as $key => $value) {
-            // check_val_bank();
             if($value == 'true')
                 $values .= "'1'";
             else if($value == 'false')
@@ -371,17 +252,17 @@ class DefaultController extends AbstractController
         INSERT INTO persons ($col_name)
         VALUES ($values);";
     
-        if ($connection->query($sql) === TRUE) {
-            $this->check_val_address();
-            $this->check_val_bank();
+        try{
+            $result = $connection->query($sql);
+            $this->check_val_address($data);
+            $this->check_val_bank($data);
             $connection->close();
             return new Response($twig->render('success_insert/index.html.twig', [
                 'username' => $data['username']
             ]));
 
-        } else {
-            $connection->close();
-            echo "Error inserting in table: " . $connection->error;
+        } catch (mysqli_sql_exception $e) {
+            return new Response("Error inserting in table persons: $e <br>");
         }
     }
 
@@ -410,4 +291,195 @@ class DefaultController extends AbstractController
         }
     }
 
+
+    #BANK
+
+    public function create_bank()
+    {
+        $connection = $this->create_connection();
+        $sql = "
+        CREATE TABLE IF NOT EXISTS bank_accounts (
+            bank_account_num INT(6) PRIMARY KEY,
+            person_id INT(6) UNSIGNED,
+            FOREIGN KEY (person_id) REFERENCES persons(person_id)
+        )";
+
+        try{
+            $result = $connection->query($sql);
+            $connection->close();
+            echo "Table Bank_accounts created successfully.<br>";
+        } catch (mysqli_sql_exception $e) {
+            echo "Failed to create bank_accounts Table <br>";
+        }
+    }
+
+    public function get_bank()
+    {
+        $this->create_bank();
+        $connection = $this->create_connection();
+
+        $sql = "SELECT * FROM bank_accounts";
+        try{
+            $result = $connection->query($sql);
+            $connection->close();
+            return $result;
+
+        }  catch (mysqli_sql_exception $e) {
+            return 0;
+        }
+    }
+
+    public function getLastRecordBank()
+    {
+        $connection = $this->create_connection();
+        $sql = "SELECT * FROM persons ORDER BY person_id DESC LIMIT 1;";
+        try {
+            $result = $connection->query($sql);
+            $row = $result->fetch_assoc();
+            $connection->close();
+            return [$row];
+        } catch (mysqli_sql_exception $e) {
+            $connection->close();
+            echo "Failed to get last record of persons<br>";
+        }
+    }
+
+
+    
+    public function getIdBank(string $bank_account_num)
+    {
+        $connection = $this->create_connection();
+        $sql = "SELECT person_id
+                FROM persons
+                WHERE bank_account_num = '$bank_account_num'";
+        try {
+            $result = $connection->query($sql);
+            $row = $result->fetch_assoc();
+            return $row['person_id'];
+        } catch (mysqli_sql_exception $e) {
+            echo "$e<br>";
+            return 0;
+        }
+    }
+    public function check_val_bank(mixed $data)
+    {
+        $connection = $this->create_connection();
+        $this->create_bank();
+        $bank_account_num = "";
+        $person_id = "";
+        foreach ($data as $key => $value) {
+            if($key == 'bank_account_num')
+                $bank_account_num = $value;
+        }
+        $person_id = $this->getIdBank($bank_account_num);
+        $sql = "
+        INSERT INTO bank_accounts (bank_account_num, person_id)
+        VALUES ('$bank_account_num', '$person_id');";
+        try{
+            $result = $connection->query($sql);
+            $connection->close();
+            echo "added a row to bank_accounts<br>";
+
+        } catch (mysqli_sql_exception $e) {
+            echo "Error adding a row bank_accounts Table<br>";
+        }
+    }
+
+    #ADDRESS
+
+    public function create_address()
+    {
+        $connection = $this->create_connection();
+        $sql = "
+        CREATE TABLE IF NOT EXISTS addresses (
+            addressID INT AUTO_INCREMENT PRIMARY KEY,
+            address VARCHAR(255),
+            person_id INT(6) UNSIGNED,
+            FOREIGN KEY (person_id) REFERENCES persons(person_id)
+        )";
+
+        try{
+            $connection->query($sql) === TRUE;
+            $connection->close();
+            return new Response("Table Bank_accounts created successfully.\n");
+        } catch (mysqli_sql_exception $e) {
+            echo "Error creating table addresses: " . $connection->error . "<br>";
+        }
+    }
+
+    public function get_address()
+    {
+        $this->create_address();
+        $connection = $this->create_connection();
+
+        $sql = "SELECT * FROM addresses";
+        try{
+            $result = $connection->query($sql);
+            $connection->close();
+            return $result;
+
+        }  catch (mysqli_sql_exception $e) {
+            return 0;
+        }
+    }
+
+    public function getLastRecordAddress()
+    {
+        $connection = $this->create_connection();
+        $sql = "SELECT * FROM persons ORDER BY person_id DESC LIMIT 1;";
+        try {
+            $result = $connection->query($sql);
+            $row = $result->fetch_assoc();
+            $connection->close();
+            return [$row['person_id'], $row['address']];
+        } catch (mysqli_sql_exception $e) {
+            $connection->close();
+            echo "$e <br>";
+        }
+    }
+
+    public function getIdAddress(string $address)
+    {
+        $connection = $this->create_connection();
+        $sql = "SELECT person_id
+                FROM persons
+                WHERE address = '$address'";
+        try {
+            $result = $connection->query($sql);
+            $row = $result->fetch_assoc();
+            return $row['person_id'];
+        } catch (mysqli_sql_exception $e) {
+            echo "$e<br>";
+            return 0;
+        }
+    }
+
+    public function check_val_address(mixed $data)
+    {
+        $connection = $this->create_connection();
+        $this->create_address();
+        $address = "";
+        $person_id = "";
+        foreach ($data as $key => $value) {
+            if($key == 'address')
+                $address = $value;
+        }
+        $person_id = $this->getIdAddress($address);
+        echo "address: $address<br> person_id: $person_id<br>";
+        $sql = "
+        INSERT INTO addresses (address, person_id)
+        VALUES ('$address', '$person_id');";
+        if ($connection->query($sql) === TRUE) {
+            $connection->close();
+            echo "added a row to addresses<br>";
+
+        } else {
+            $connection->close();
+            echo "Error inserting in table addresses: " . $connection->error;
+        }
+    }
+
+
 }
+
+
