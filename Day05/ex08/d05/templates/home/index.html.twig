@@ -2,19 +2,55 @@
 
 {% block body %}
 
-<div style="display: flex; margin-top: 20">
+<div style="margin-top: 20">
 
+  
+
+  <div id="table_bank_accounts" style="margin-right: 30">
+  <h3>TABLE BANK_ACCOUNTS</h3>
+  <table style="border: solid;">
+      <tr>
+        {% for column in columns_bank %}
+          <th>{{column}}</th>
+        {% endfor %}
+      </tr>
+      {% for bank_account in bank_accounts %}
+      <tr>
+        {% for column in columns_bank %}
+          <td>{{bank_account[column]}}</td>
+        {% endfor %}
+      </tr>
+      {% endfor %}
+  </table>
+  </div>
+
+  <div id="table_addresses" style="margin-right: 30">
+  <h3>TABLE ADDRESSES</h3>
+  <table style="border: solid;">
+      <tr>
+        {% for column in columns_addresses %}
+          <th>{{column}}</th>
+        {% endfor %}
+      </tr>
+      {% for address in addresses %}
+      <tr>
+        {% for column in columns_addresses %}
+          <td>{{address[column]}}</td>
+        {% endfor %}
+      </tr>
+      {% endfor %}
+  </table>
+  </div>
   <div id="table_persons" style="margin-right: 30">
   {% if table %}
 
   <h3>TABLE PERSONS</h3>
   <a href="/add_column">Add column</a>
-  <table>
+  <table style="border: solid;">
       <tr>
         {% for column in columns %}
           <th>{{column}}</th>
         {% endfor %}
-          <th>Action</th>
       </tr>
       {% for person in persons %}
       <tr>
@@ -25,7 +61,6 @@
           <td>{{person[column]}}</td>
           {% endif %}
         {% endfor %}
-          <td><a href="/delete/{{person["person_id"]}}">Delete</a> <a href="/update_{{ person["person_id"] }}">Update</a> </td>
           
       </tr>
       {% endfor %}
@@ -55,42 +90,6 @@
 
   {% endif %}
 
-  </div>
-
-  <div id="table_bank_accounts" style="margin-right: 30">
-  <h3>TABLE BANK_ACCOUNTS</h3>
-  <table>
-      <tr>
-        {% for bank_account in bank_accounts %}
-          <th>{{bank_account}}</th>
-        {% endfor %}
-      </tr>
-      {% for bank_account in bank_accounts %}
-      <tr>
-        {% for column in columns_bank %}
-          <td>{{bank_account[column]}}</td>
-        {% endfor %}
-      </tr>
-      {% endfor %}
-  </table>
-  </div>
-
-  <div id="table_addresses" style="margin-right: 30">
-  <h3>TABLE ADDRESSES</h3>
-  <table>
-      <tr>
-        {% for column in columns_addresses %}
-          <th>{{column}}</th>
-        {% endfor %}
-      </tr>
-      {% for address in addresses %}
-      <tr>
-        {% for column in columns_addresses %}
-          <td>{{address[column]}}</td>
-        {% endfor %}
-      </tr>
-      {% endfor %}
-  </table>
   </div>
 </div>
 
