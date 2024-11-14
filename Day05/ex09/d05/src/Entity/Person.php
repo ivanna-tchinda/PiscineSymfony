@@ -28,18 +28,27 @@ class Person
     #[ORM\Column]
     private ?bool $enable = null;
 
+    #[ORM\Column(length: 255)]
+    private ?string $address = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $bankaccountnum = null;
+
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $birthdate = null;
 
-    /**
-     * @var Collection<int, BankAccount>
-     */
-    #[ORM\OneToMany(targetEntity: BankAccount::class, mappedBy: 'person')]
-    private Collection $bankAccounts;
+    // Relation OneToOne avec BankAccount
+    #[ORM\OneToOne(mappedBy: 'person', cascade: ['persist', 'remove'])]
+    private ?BankAccount $bankAccount = null;
+
+
+    // Relation OneToOne avec BankAccount
+    #[ORM\OneToOne(mappedBy: 'person', cascade: ['persist', 'remove'])]
+    private ?Address $address_str = null;
 
     public function __construct()
     {
-        $this->bankAccounts = new ArrayCollection();
+        // Initialisation des collections, ici il n'est plus nécessaire car on a un OneToOne avec BankAccount
     }
 
     public function getId(): ?int
@@ -55,7 +64,6 @@ class Person
     public function setUsername(string $username): static
     {
         $this->username = $username;
-
         return $this;
     }
 
@@ -67,7 +75,6 @@ class Person
     public function setName(string $name): static
     {
         $this->name = $name;
-
         return $this;
     }
 
@@ -79,7 +86,6 @@ class Person
     public function setEmail(string $email): static
     {
         $this->email = $email;
-
         return $this;
     }
 
@@ -91,7 +97,6 @@ class Person
     public function setEnable(bool $enable): static
     {
         $this->enable = $enable;
-
         return $this;
     }
 
@@ -103,37 +108,58 @@ class Person
     public function setBirthdate(\DateTimeInterface $birthdate): static
     {
         $this->birthdate = $birthdate;
-
         return $this;
     }
 
-    /**
-     * @return Collection<int, BankAccount>
-     */
-    public function getBankAccounts(): Collection
+    public function getAddress(): ?string
     {
-        return $this->bankAccounts;
+        return $this->address;
     }
 
-    public function addBankAccount(BankAccount $bankAccount): static
+    public function setAddress(string $address): static
     {
-        if (!$this->bankAccounts->contains($bankAccount)) {
-            $this->bankAccounts->add($bankAccount);
-            $bankAccount->setPerson($this);
-        }
-
+        $this->address = $address;
         return $this;
     }
 
-    public function removeBankAccount(BankAccount $bankAccount): static
+    public function getBankAccountNum(): ?string
     {
-        if ($this->bankAccounts->removeElement($bankAccount)) {
-            // set the owning side to null (unless already changed)
-            if ($bankAccount->getPerson() === $this) {
-                $bankAccount->setPerson(null);
-            }
-        }
+        return $this->bankaccountnum;
+    }
 
+    public function setBankAccountNum(string $bankaccountnum): static
+    {
+        $this->bankaccountnum = $bankaccountnum;
+        return $this;
+    }
+
+    // Getter et Setter pour le BankAccount associé
+    public function getBankAccount(): ?BankAccount
+    {
+        return $this->bankAccount;
+    }
+
+    public function setBankAccount(?BankAccount $bankAccount): static
+    {
+        $this->bankAccount = $bankAccount;
+        if ($bankAccount !== null) {
+            $bankAccount->setPerson($this);  // Associer la personne au BankAccount
+        }
+        return $this;
+    }
+    
+    // Getter et Setter pour le BankAccount associé
+    public function getAddressStr(): ?Address
+    {
+        return $this->bankAccount;
+    }
+
+    public function setAddressStr(?Address $address_str): static
+    {
+        $this->address_str = $address_str;
+        if ($address_str !== null) {
+            $address_str->setPerson($this);  // Associer la personne au BankAccount
+        }
         return $this;
     }
 }

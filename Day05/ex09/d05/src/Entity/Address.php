@@ -2,11 +2,11 @@
 
 namespace App\Entity;
 
-use App\Repository\BankAccountRepository;
+use App\Repository\AddressRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: BankAccountRepository::class)]
-class BankAccount
+#[ORM\Entity(repositoryClass: AddressRepository::class)]
+class Address
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -17,13 +17,11 @@ class BankAccount
     #[ORM\JoinColumn(nullable: false)]  // La personne doit être définie pour chaque compte bancaire
     private ?Person $person = null;
 
-
     #[ORM\Column(length: 255)]
-    private ?string $bankAccountNum = null;
+    private ?string $address = null;
 
     public function getId(): ?int
     {
-        // Retourne l'ID de la personne associée
         return $this->person ? $this->person->getId() : null;
     }
 
@@ -38,14 +36,15 @@ class BankAccount
         return $this;
     }
 
-    public function getBankAccountNum(): ?string
+    public function getAddress(): ?string
     {
-        return $this->bankAccountNum;
+        return $this->address;
     }
 
-    public function setBankAccountNum(string $bankAccountNum): static
+    public function setAddress(string $address): static
     {
-        $this->bankAccountNum = $bankAccountNum;
+        $this->address = $address;
+
         return $this;
     }
 }

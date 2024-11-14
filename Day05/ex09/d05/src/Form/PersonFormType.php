@@ -27,6 +27,8 @@ class PersonFormType extends AbstractType
             ->add('birthdate', null, [
                 'widget' => 'single_text',
             ])
+            ->add('address')
+            ->add('bank_account_num')
             ->add('save', SubmitType::class, [
                 'attr' => ['class' => 'save'],
             ]);

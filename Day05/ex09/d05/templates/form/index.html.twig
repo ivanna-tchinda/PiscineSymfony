@@ -2,7 +2,7 @@
 {% block body %}
 
 
-<p>TABLE</p>
+<h1>TABLE PERSON</h1>
 <table>
     <tr>
     {% for column in columns %}
@@ -23,6 +23,40 @@
     </tr>
     {% endfor %}
 </table>
+
+<h1>TABLE BANK ACCOUNT</h1>
+<table>
+    <tr>
+    {% for column in columns_bank %}
+        <th>{{column}}</th>
+      {% endfor %}
+    </tr>
+    {% for bank_account in bank_accounts %}
+    <tr>
+    {% for column in columns_bank %}
+        <td>{{ attribute(bank_account, column)}}</td>
+    {% endfor %}
+    </tr>
+    {% endfor %}
+</table>
+<br>
+
+<h1>TABLE ADDRESS</h1>
+<table>
+    <tr>
+    {% for column in columns_address %}
+        <th>{{column}}</th>
+      {% endfor %}
+    </tr>
+    {% for address in addresses %}
+    <tr>
+    {% for column in columns_address %}
+        <td>{{ attribute(address, column)}}</td>
+    {% endfor %}
+    </tr>
+    {% endfor %}
+</table>
+<br>
 
 {{ form(person) }}
 
