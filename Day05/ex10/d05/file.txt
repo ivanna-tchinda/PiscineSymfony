@@ -1,4 +1,0 @@
-username:itchinda
-name:ivanna
-age:24
-email:mail
