@@ -99,6 +99,57 @@ class DefaultController extends AbstractController
         }
     }
 
+    public function filter_table(string $filter,string $filter_value,string $sort_type)
+    {
+        $connection = $this->create_connection();
+        if (empty($filter_value) || !is_string($filter_value)) {
+            throw new Exception("Adresse invalide.");
+        }
+        $filter_value = $this->sanitize_input($filter_value);
+        
+        echo "filter: $filter, filter_value: $filter_value, sort_type: $sort_type<br>";
+        $sort = ($sort_type == 'increase') ? 'ASC' : 'DESC';
+        $sql = "
+        SELECT *
+        FROM persons
+        INNER JOIN person_address
+        ON persons.person_id = person_address.person_id
+        INNER JOIN bank_accounts
+        ON person_address.person_id = bank_accounts.person_id
+        WHERE persons.$filter = '$filter_value'
+        ORDER BY persons.person_id $sort;
+        ";
+
+        try{
+            $result = $connection->query($sql);
+            $connection->close();
+            return $result;
+
+        }  catch (mysqli_sql_exception $e) {
+            return 0;
+        }
+    }
+
+    #[Route('/success_filter', name: 'success_filter')]
+    public function success_filter(Environment $twig): Response
+    {
+        //creer la table
+        $filter = $_POST["filter"];
+        $filter_value = $_POST["filter_name"];
+        $sort_type = $_POST["sort"];
+        // var_dump("");
+        $table = $this->filter_table($filter, $filter_value, $sort_type);
+        $columns_persons = [];
+        // var_dump($_POST);
+        while ($table && $col = mysqli_fetch_field($table))
+            array_push($columns_persons, $col->name);
+
+        return new Response($twig->render('filter/index.html.twig', [
+            'persons' => $table,
+            'columns_person' => $columns_persons
+        ]));
+    }
+
     #[Route('/success_insert', name: 'success_insert')]
     public function insertForm(Environment $twig): Response
     {
