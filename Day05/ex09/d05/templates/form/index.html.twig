@@ -12,7 +12,7 @@
     {% for person in persons %}
     <tr>
     {% for column in columns %}
-        {% if column == 'birthdate'%}
+        {% if column == 'birthdate' or column == 'employed_since' or column == 'employed_until' %}
           <td>{{ person.getBirthdate()|date('Y-m-d')}}</td>
         {% elseif column == 'enable'%}
           <td>{{ person.isEnable() == 1 ? "Yes" : "No" }}</td>

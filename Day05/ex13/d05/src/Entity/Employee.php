@@ -5,6 +5,8 @@ namespace App\Entity;
 use App\Repository\EmployeeRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 
 #[ORM\Entity(repositoryClass: EmployeeRepository::class)]
 class Employee
@@ -14,14 +16,24 @@ class Employee
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $firstname = null;
+    #[ORM\ManyToOne(targetEntity: Employee::class, inversedBy: 'subordonnees')]
+    #[ORM\JoinColumn(name: 'superieur_id', referencedColumnName: 'id')]
+    private ?Employee $superieur = null;
+
+    #[ORM\OneToMany(mappedBy: 'superieur', targetEntity: Employee::class)]
+    private Collection $subordonnees;
+
+    #[ORM\Column(type: 'string', length: 255, unique: true)]
+    #[Assert\NotBlank(message: "Le nom est obligatoire.")]
+    private string $firstname;
 
     #[ORM\Column(length: 255)]
     private ?string $lastname = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $email = null;
+    #[ORM\Column(type: 'string', length: 255, unique: true)]
+    #[Assert\NotBlank(message: "L'email est obligatoire.")]
+    #[Assert\Email(message: "L'email '{{ value }}' n'est pas un email valide.")]
+    private string $email;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $birthdate = null;
@@ -47,6 +59,51 @@ class Employee
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function __construct()
+    {
+        $this->subordonnees = new ArrayCollection();
+    }
+
+    // Getters et setters
+
+    public function getSuperieur(): ?Employee
+    {
+        return $this->superieur;
+    }
+
+    public function setSuperieur(?Employee $superieur): self
+    {
+        $this->superieur = $superieur;
+        return $this;
+    }
+
+    public function getSubordonnees(): Collection
+    {
+        return $this->subordonnees;
+    }
+
+    public function addSubordonne(Employee $subordonne): self
+    {
+        if (!$this->subordonnees->contains($subordonne)) {
+            $this->subordonnees[] = $subordonne;
+            $subordonne->setSuperieur($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSubordonne(Employee $subordonne): self
+    {
+        if ($this->subordonnees->removeElement($subordonne)) {
+            // Si l'élément est retiré, on dissocie le supérieur
+            if ($subordonne->getSuperieur() === $this) {
+                $subordonne->setSuperieur(null);
+            }
+        }
+
+        return $this;
     }
 
     public function getFirstname(): ?string
