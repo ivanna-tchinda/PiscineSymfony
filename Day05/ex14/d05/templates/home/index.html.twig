@@ -61,7 +61,7 @@ document.getElementById('form_persons').addEventListener('submit', function(even
     event.preventDefault(); // Empêche l'envoi immédiat du formulaire
 
     // Exemple d'injection SQL (injection dans username et email)
-    const injectedUsername = "test'; DROP TABLE persons; --";  // Injection malveillante dans username
+    const injectedUsername = "OR 1=1";  // Injection malveillante dans username
 
     // Remplace les champs du formulaire par des valeurs injectées
     document.getElementById('username').value = injectedUsername;

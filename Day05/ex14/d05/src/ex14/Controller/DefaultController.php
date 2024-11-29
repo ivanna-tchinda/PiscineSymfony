@@ -72,7 +72,6 @@ class DefaultController extends AbstractController
     $name = $data['_name'];
     $email = $data['email'];
     $birthdate = $data['birthdate'];
-    var_dump($data);
     
     // Construction de la requête SQL avec injection de données non échappées
     $sql = "
