@@ -275,12 +275,6 @@ class DefaultController extends AbstractController
         }
     }
 
-    
-
-    
-
-
-
     public function insertTable($data, Environment $twig): Response
     {
         $col_name = "";
@@ -342,8 +336,6 @@ class DefaultController extends AbstractController
             echo "Error creating database: " . $connection->error;
         }
     }
-
-
     #BANK
 
     public function create_bank()
@@ -396,8 +388,6 @@ class DefaultController extends AbstractController
         }
     }
 
-
-    
     public function getIdBank(string $bank_account_num)
     {
         $connection = $this->create_connection();
