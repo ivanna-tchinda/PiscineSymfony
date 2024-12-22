@@ -1,0 +1,10 @@
+controllers:
+    resource:
+        path: ../src/Controller/
+        namespace: App\Controller
+    type: attribute
+E02Bundle:
+    resource: '../src/E02Bundle/Controller/'
+    type: annotation
+app_logout:
+    path: /logout
