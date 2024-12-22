@@ -1,0 +1,35 @@
+{# templates/login/index.html.twig #}
+{% extends 'base.html.twig' %}
+
+{# ... #}
+
+{% block body %}
+    <h1>You have access to this page!</h1>
+    <h1>Liste des utilisateurs</h1>
+
+    {% if users is empty %}
+        <p>Aucun utilisateur trouvé.</p>
+    {% else %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Email</th>
+                    <th>Rôles</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                    <tr>
+                        <td>{{ user.email }}</td>
+                        <td>
+                            {# Affiche les rôles sous forme de liste, par exemple : "ROLE_ADMIN, ROLE_USER" #}
+                            {{ user.roles|join(', ') }}
+                        </td>
+                        <td><a href="delete/{{user.id}}">Supprimer</a></td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+{% endblock %}
