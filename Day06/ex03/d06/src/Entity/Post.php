@@ -20,13 +20,12 @@ class Post
     #[ORM\Column(length: 255)]
     private ?string $content = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTimeInterface $created = null;
+    #[ORM\Column(length: 255)]
+    private ?string $created = null;
 
-
-    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'posts')]
+    #[ORM\ManyToOne(inversedBy: 'post', cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
-    private $author;
+    private ?User $author = null;
 
     public function getId(): ?int
     {
@@ -57,26 +56,26 @@ class Post
         return $this;
     }
 
-    public function getCreated(): ?\DateTimeInterface
+    public function getCreated(): ?string
     {
         return $this->created;
     }
 
-    public function setCreated(\DateTimeInterface $created): static
+    public function setCreated(string $created): static
     {
         $this->created = $created;
 
         return $this;
     }
 
-    public function getUser(): ?User
+    public function getAuthor(): ?User
     {
-        return $this->user;
+        return $this->author;
     }
 
-    public function setUser(?User $user): self
+    public function setAuthor(User $author): static
     {
-        $this->user = $user;
+        $this->author = $author;
 
         return $this;
     }

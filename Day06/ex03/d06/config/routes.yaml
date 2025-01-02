@@ -3,6 +3,11 @@ controllers:
         path: ../src/Controller/
         namespace: App\Controller
     type: attribute
+
 E03Bundle:
     resource: '../src/E03Bundle/Controller/'
     type: annotation
+app_logout:
+    path: /logout
+form_submit:
+    path: /submit_form
