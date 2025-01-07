@@ -1,0 +1,15 @@
+controllers:
+    resource:
+        path: ../src/Controller/
+        namespace: App\Controller
+    type: attribute
+E05Bundle:
+    resource: '../src/E05Bundle/Controller/'
+    type: annotation
+app_logout:
+    path: /logout
+form_submit:
+    path: /submit_form
+post:
+  path: /like_post/{post}
+  defaults: { _controller: E05Bundle:DefaultController:post}

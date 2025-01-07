@@ -47,12 +47,11 @@ class SecurityController extends AbstractController
 
         // ou ajouter un message optionnel - visible pour les développeurs
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED', null, 'User tried to access a page without being authenticated');
-        
         return $this->render('show_post/index.html.twig', [
             'post' =>  $post,
-            'id' => $id
+            'id' => $id,
+            'entity' => $entityManager
         ]);
     }
-
 
 }

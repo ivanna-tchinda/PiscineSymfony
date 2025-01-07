@@ -1,0 +1,15 @@
+{# templates/login/index.html.twig #}
+{% extends 'base.html.twig' %}
+
+{# ... #}
+
+{% block body %}
+    <h1>Post {{id}}</h1>
+        <div style="border-style: solid; border-width: 1px; border-radius: 15px; border-color: black;">
+            <h2>{{post.getTitle()}}</h2></a>
+            <p>{{post.getContent()}}</p>
+            <h4>{{post.getCreated()}}</h4>
+            <h4>{{post.getAuthor().getEmail()}}</h4>
+            {# <h4><button onclick="{{ post.setLikes(post.getLikes() + 1).likes }}; {{entity.flush()}}; alert('clicked')">🩷</button> {{post.getLikes()}} </h4> #}
+        </div>
+{% endblock %}

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\E03Bundle\Controller;
+namespace App\E05Bundle\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -63,12 +63,7 @@ class DefaultController extends AbstractController
             'form' =>  $form
         ]);
     }
-    // #[Route('/form', name: 'form')]
-    // public function form()
-    // {
-    //     //display all the posts
-    //     return new Response("<a href='/login'>Log in</a> to access this page");
-    // }
+    
 
     
 }
