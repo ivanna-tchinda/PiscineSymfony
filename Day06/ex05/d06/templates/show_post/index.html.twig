@@ -10,6 +10,17 @@
             <p>{{post.getContent()}}</p>
             <h4>{{post.getCreated()}}</h4>
             <h4>{{post.getAuthor().getEmail()}}</h4>
-            {# <h4><button onclick="{{ post.setLikes(post.getLikes() + 1).likes }}; {{entity.flush()}}; alert('clicked')">🩷</button> {{post.getLikes()}} </h4> #}
+            <h4>
+                <a href="{{ path('like.post', {id: post.id}) }}" data-action="like">
+                    {% if post.isLikedByUser(app.user) == true %}🩷{% else %}♡{% endif %}
+                </a> {{post.likes|length}} 
+            </h4>
+            <h4>
+                <a href="{{ path('dislike.post', {id: post.id}) }}" data-action="dislike">
+                    {% if post.isDislikedByUser(app.user) == true %}❌ {% else %}✖️{% endif %}
+                </a> {{post.dislikes|length}} 
+            </h4>
+                
+
         </div>
 {% endblock %}

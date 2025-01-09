@@ -6,6 +6,8 @@ use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use App\Entity\Post;
+use Doctrine\Common\Collections\Collection;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
@@ -30,6 +32,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     #[ORM\Column]
     private ?string $password = null;
+
+    #[ORM\OneToMany(targetEntity: Post::class,  mappedBy: 'user')]
+    #[ORM\JoinTable(
+        name: 'posts',
+        joinColumns: [
+            new ORM\JoinColumn(name: 'posts', referencedColumnName: 'posts')
+        ],
+        inverseJoinColumns: [
+            new ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id')
+        ]
+    )]
+    private ?Collection $posts;
 
     public function getId(): ?int
     {
@@ -70,6 +84,20 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $roles[] = 'ROLE_USER';
 
         return array_unique($roles);
+    }
+
+    public function getPosts(): Collection
+    {
+        return $this->posts;
+    }
+
+    public function addPost(Post $post): self
+    {
+        if(!$this->posts->contains($post)){
+            $this->posts[] = $post;
+        }
+
+        return $this;
     }
 
     /**

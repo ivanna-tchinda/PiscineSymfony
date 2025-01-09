@@ -53,8 +53,9 @@ class DefaultController extends AbstractController
             $task = $form->getData();
     
                 // ... perform some action, such as saving the task to the database
-    
+            $user->addPost($post);
             $entityManager->persist($post);
+            $entityManager->persist($user);
             $entityManager->flush();
             return new Response("form submitted");
         }

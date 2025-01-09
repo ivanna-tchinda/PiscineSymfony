@@ -6,8 +6,8 @@ use App\Repository\PostRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use App\Entity\User;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+
 
 #[ORM\Entity(repositoryClass: PostRepository::class)]
 class Post
@@ -32,7 +32,7 @@ class Post
 
     #[ORM\ManyToMany(targetEntity: User::class)]
     #[ORM\JoinTable(
-        name: 'post_likes', // Nom explicite pour éviter le conflit avec la table "post_user"
+        name: 'post_likes',
         joinColumns: [
             new ORM\JoinColumn(name: 'post_id', referencedColumnName: 'id')
         ],
@@ -44,7 +44,7 @@ class Post
 
     #[ORM\ManyToMany(targetEntity: User::class)]
     #[ORM\JoinTable(
-        name: 'post_unlikes', // Nom explicite pour cette table intermédiaire
+        name: 'post_dislikes',
         joinColumns: [
             new ORM\JoinColumn(name: 'post_id', referencedColumnName: 'id')
         ],
@@ -52,7 +52,7 @@ class Post
             new ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id')
         ]
     )]
-    private Collection $unlikes;
+    private Collection $dislikes;
 
     public function getId(): ?int
     {
@@ -121,25 +121,32 @@ class Post
         return $this;
     }
 
-    public function removeLike(User $like){
-        $this->likes->remove($like);
+    public function isLikedByUser(User $user){
+        return $this->likes->contains($user);
     }
 
-    // public function getUnlikes(): Collection
-    // {
-    //     return $this->unlikes;
-    // }
+    public function removeLike(User $like){
+        return $this->likes->removeElement($like);
+    }
 
-    // public function addUnlike(User $unlike): self
-    // {
-    //     if(!$this->unlikes->contains($unlike)){
-    //         $this->unlikes[] = $unlike;
-    //     }
+    public function getDislikes(): Collection
+    {
+        return $this->dislikes;
+    }
 
-    //     return $this;
-    // }
+    public function addDislike(User $dislike): self
+    {
+        if(!$this->dislikes->contains($dislike)){
+            $this->dislikes[] = $dislike;
+        }
 
-    // public function removeUnlike(User $unlike){
-    //     $this->unlikes->remove($unlike);
-    // }
+        return $this;
+    }
+    public function isDislikedByUser(User $user){
+        return $this->dislikes->contains($user);
+    }
+
+    public function removeDislike(User $dislike){
+        $this->dislikes->removeElement($dislike);
+    }
 }
