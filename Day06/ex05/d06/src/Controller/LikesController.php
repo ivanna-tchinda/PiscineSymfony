@@ -14,48 +14,47 @@ class LikesController extends AbstractController
 {
   #[Route(path: '/like/post/{id}', name: 'like.post')]
   public function like(Post $post, EntityManagerInterface $manager, int $id){
-    $user = $this->getUser();
-    $repo = $manager->getRepository(Post::class)->findBy([], ['created' => 'DESC']);
-
-    if($post->isLikedByUser($user)){
-      $post->removeLike($user);
+    $app_user = $this->getUser();
+    
+    if($post->isLikedByUser($app_user)){
+      $post->removeLike($app_user);
       $manager->flush();
     }
-    else if($post->isDislikedByUser($user)){
-      $post->addLike($user);
-      $post->removeDislike($user);
+    else if($post->isDislikedByUser($app_user)){
+      $post->addLike($app_user);
+      $post->removeDislike($app_user);
       $manager->flush();
     }
     else{
-      $post->addLike($user);
+      $post->addLike($app_user);
       $manager->flush();
     }
-    return $this->render('home/index.html.twig',[
-      'posts' => $repo
+    return $this->render('message/index.html.twig',[
+      'message' => "Post has been liked!"
+
   ]);
   }
 
   #[Route(path: '/dislike/post/{id}', name: 'dislike.post')]
   public function dislike(Post $post, EntityManagerInterface $manager, int $id){
-    $user = $this->getUser();
-    $repo = $manager->getRepository(Post::class)->findBy([], ['created' => 'DESC']);
+    $app_user = $this->getUser();
 
-    if($post->isDislikedByUser($user)){
-      $post->removeDislike($user);
+    if($post->isDislikedByUser($app_user)){
+      $post->removeDislike($app_user);
       $manager->flush();
     }
 
-    else if($post->isLikedByUser($user)){
-      $post->addDislike($user);
-      $post->removeLike($user);
+    else if($post->isLikedByUser($app_user)){
+      $post->addDislike($app_user);
+      $post->removeLike($app_user);
       $manager->flush();
     }
     else{
-      $post->addDislike($user);
+      $post->addDislike($app_user);
       $manager->flush();
     }
-    return $this->render('home/index.html.twig',[
-            'posts' => $repo
-        ]);
+    return $this->render('message/index.html.twig',[
+      'message' => "Post has been disliked!"
+    ]);
   }
 }

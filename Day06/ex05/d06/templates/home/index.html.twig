@@ -5,7 +5,8 @@
 
 {% block body %}
     {% if app.user %}
-        {# <h6>{{app.user.getEmail()}} reputation: {{app.user.getPosts()}}</h6> #}
+        <h4>Your username: {{app.user.getEmail()}}</h4>
+        <h4>Your reputation:{{appuser_like_number - appuser_dislike_number}}</h4>
     {% endif %}
     <h1>All posts</h1>
     <a href="/form">Créer un nouveau post</a>

@@ -35,7 +35,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\OneToMany(targetEntity: Post::class,  mappedBy: 'user')]
     #[ORM\JoinTable(
-        name: 'posts',
+        name: 'user_posts',
         joinColumns: [
             new ORM\JoinColumn(name: 'posts', referencedColumnName: 'posts')
         ],
@@ -43,7 +43,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             new ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id')
         ]
     )]
-    private ?Collection $posts;
+    private Collection $posts;
 
     public function getId(): ?int
     {
@@ -93,7 +93,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function addPost(Post $post): self
     {
-        if(!$this->posts->contains($post)){
+        if(!$this->posts && !$this->posts->contains($post)){
             $this->posts[] = $post;
         }
 
