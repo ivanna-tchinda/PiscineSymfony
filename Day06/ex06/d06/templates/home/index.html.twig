@@ -1,0 +1,21 @@
+{# templates/login/index.html.twig #}
+{% extends 'base.html.twig' %}
+
+{# ... #}
+
+{% block body %}
+    {% if app.user %}
+        <h4>Your username: {{app.user.getEmail()}}</h4>
+        <h4>Your reputation:{{appuser_like_number - appuser_dislike_number}}</h4>
+    {% endif %}
+    <h1>All posts</h1>
+    <a href="/form">Créer un nouveau post</a>
+    {% for post in posts %}
+        <div style="border-style: solid; border-width: 1px; border-radius: 15px; border-color: black;">
+            <a href="/post/{{post.getId()}}"><h2>{{post.getTitle()}}</h2></a>
+            <h4>{{post.getCreated()}}</h4>
+            <h4>{{post.getAuthor().getEmail()}}</h4>
+            <h4>🩷 {{post.likes|length}} ❌{{post.dislikes|length}}</h4>
+        </div>
+    {% endfor %}
+{% endblock %}
