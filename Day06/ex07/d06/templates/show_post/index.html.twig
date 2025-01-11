@@ -1,0 +1,29 @@
+{# templates/login/index.html.twig #}
+{% extends 'base.html.twig' %}
+
+{# ... #}
+
+{% block body %}
+    <h1>Post {{id}}</h1>
+        <div style="border-style: solid; border-width: 1px; border-radius: 15px; border-color: black;">
+            <br>
+            <a href="/edit_post/{{post.getId()}}">Edit this post</a>
+            <h2>{{post.getTitle()}}</h2></a>
+            <p>{{post.getContent()}}</p>
+            <h4>{{post.getCreated()}}</h4>
+            <h4>{{post.getAuthor().getEmail()}}</h4>
+            <h4>
+                <a href="{{ path('like.post', {id: post.id}) }}" data-action="like">
+                    {% if post.isLikedByUser(app.user) == true %}🩷{% else %}♡{% endif %}
+                </a> {{post.likes|length}} 
+            </h4>
+            <h4>
+                <a href="{{ path('dislike.post', {id: post.id}) }}" data-action="dislike">
+                    {% if post.isDislikedByUser(app.user) == true %}❌ {% else %}✖️{% endif %}
+                </a> {{post.dislikes|length}} 
+            </h4>
+            <h5>Last modification: {{post.getLastUpdateUser().getEmail()}}, {{post.getLastUpdateTime()}}</h5>
+                
+
+        </div>
+{% endblock %}
