@@ -14,6 +14,9 @@ class LikesController extends AbstractController
 {
   #[Route(path: '/like/post/{id}', name: 'like.post')]
   public function like(Post $post, EntityManagerInterface $manager, int $id){
+    $this->denyAccessUnlessGranted('IS_AUTHENTICATED', null, 'User tried to access a page without having IS_AUTHENTICATED');
+    $this->denyAccessUnlessGranted('ROLE_STANDARD', null, 'User tried to access a page without having ROLE_STANDARD');
+    
     $app_user = $this->getUser();
     
     if($post->isLikedByUser($app_user)){
@@ -37,6 +40,9 @@ class LikesController extends AbstractController
 
   #[Route(path: '/dislike/post/{id}', name: 'dislike.post')]
   public function dislike(Post $post, EntityManagerInterface $manager, int $id){
+    $this->denyAccessUnlessGranted('IS_AUTHENTICATED', null, 'User tried to access a page without having IS_AUTHENTICATED');
+    $this->denyAccessUnlessGranted('ROLE_PREMIUM', null, 'User tried to access a page without having ROLE_PREMIUM');
+    
     $app_user = $this->getUser();
 
     if($post->isDislikedByUser($app_user)){

@@ -44,6 +44,8 @@ class DefaultController extends AbstractController
         if($app_user){
           $reputation_num = $app_user->getReputationNum();
           // $this->setRoles($entity);
+        var_dump($app_user->getRoles());
+
         }
         return new Response($twig->render('home/index.html.twig',[
             'posts' => $repo,
@@ -55,8 +57,6 @@ class DefaultController extends AbstractController
     #[Route(path: '/form', name: 'app_form')]
     public function form(EntityManagerInterface $entityManager, #[CurrentUser] ?User $user, Request $request): Response
     {
-        $this->denyAccessUnlessGranted('IS_AUTHENTICATED');
-        // ou ajouter un message optionnel - visible pour les développeurs
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED', null, 'User tried to access a page without being authenticated');
         
 
@@ -93,16 +93,14 @@ class DefaultController extends AbstractController
     #[Route('/edit_post/{id}', name: 'edit_post')]
     public function edit_post(EntityManagerInterface $entity, #[CurrentUser] ?User $user, int $id, Request $request)
     {
-        $this->denyAccessUnlessGranted('IS_AUTHENTICATED');
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED', null, 'User tried to access a page without being authenticated');
 
-        
         $now = date("Y-m-d h:i:sa");
         
         $post = $entity->getRepository(Post::class)->find($id);
-        //editer le formulaire seulement si c'est son post ou si role admin ou gold, et auth
-        if($post->getAuthor() != $user->getEmail())
-          $this->denyAccessUnlessGranted('GOLD_USER');
+        if($post->getAuthor() != $user){
+            $this->denyAccessUnlessGranted('ROLE_GOLD', null, 'User tried to access a page without being ROLE_GOLD');
+        }
 
         if (!$post) {
             throw $this->createNotFoundException(

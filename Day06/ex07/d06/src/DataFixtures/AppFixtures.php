@@ -26,13 +26,13 @@ class AppFixtures extends Fixture
             $user->setPassword($password);
             $user->setReputationNum($i);
             if($user->getReputationNum() > 8)
-                $user->setRoles(['GOLD_USER']);
+                $user->setRoles(['ROLE_GOLD']);
             else if($user->getReputationNum() > 5)
-                $user->setRoles(['PREMIUM_USER']);
+                $user->setRoles(['ROLE_PREMIUM']);
             else if($user->getReputationNum() > 2)
-                $user->setRoles(['STANDARD_USER']);
+                $user->setRoles(['ROLE_STANDARD']);
             else
-                $user->setRoles(['BASIC_USER']);
+                $user->setRoles(['ROLE_BASIC']);
 
             $now = date("Y-m-d h:i:sa");
             $post = new Post();
